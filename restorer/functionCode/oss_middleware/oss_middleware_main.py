@@ -10,7 +10,7 @@ class ossMiddleWare():
     '''
     def __init__(self,ak,secret,token,endpoint):
         arg_dict=locals()
-        globalEnv.logger.debug('code:{}.{} {}'.format(__name__,sys._getframe().f_code.co_name ,demjson.encode(arg_dict)))
+        globalEnv.logger.debug('code:{}.{} {}'.format(__name__,sys._getframe().f_code.co_name ,str(arg_dict)))
         self.__auth=oss2.StsAuth(ak,secret,token,auth_version=oss2.AUTH_VERSION_2)
         self.__endpoint=endpoint
         globalEnv.logger.info('oss init complete')

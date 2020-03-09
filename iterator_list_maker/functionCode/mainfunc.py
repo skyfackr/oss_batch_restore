@@ -17,7 +17,7 @@ def main_func(event,context):
     else:
         prefix=''
     ans_list=OSSMW.getList(bucket,prefix=prefix)
-    if ans_list==None:
+    if ans_list==[]:
         return {
             'success':False,
             'msg':'cannot find prefix or no archive file'

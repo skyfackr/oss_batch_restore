@@ -11,7 +11,8 @@ class ossMiddleWare():
     '''
     def __init__(self,ak,secret,token,endpoint):
         arg_dict=locals()
-        globalEnv.logger.debug('code:{}.{} {}'.format(__name__,sys._getframe().f_code.co_name ,demjson.encode(arg_dict)))
+        globalEnv.logger.debug(str(arg_dict))
+        globalEnv.logger.debug('code:{}.{} {}'.format(__name__,sys._getframe().f_code.co_name ,str(arg_dict)))
         self.__auth=oss2.StsAuth(ak,secret,token,auth_version=oss2.AUTH_VERSION_2)
         self.__endpoint=endpoint
         globalEnv.logger.info('oss init complete')
@@ -24,7 +25,7 @@ class ossMiddleWare():
         如果获取失败或者没有则返回空
         '''
         arg_dict=locals()
-        globalEnv.logger.debug('code:{}.{} {}'.format(__name__,sys._getframe().f_code.co_name ,demjson.encode(arg_dict)))
+        globalEnv.logger.debug('code:{}.{} {}'.format(__name__,sys._getframe().f_code.co_name ,str(arg_dict)))
         try:
             bucket=oss2.Bucket(self.__auth,self.__endpoint,bucketName)
         except Exception as e:
@@ -32,8 +33,10 @@ class ossMiddleWare():
             globalEnv.logger.debug('exception:',exc_info=e)
             return None
         raw_list=[]
-        for obj in oss2.ObjectIterator(bucket,prefix=prefix):
-            raw_list.append(str(obj.key))
-        ans_list=get_archive_list(raw_list,bucket)
-        globalEnv.info('get archive list success!')
-        return ans_list
+        for obj in oss2.ObjectIterator(bucket,prefix=prefix,max_keys=999):
+            if obj.storage_class==oss2.BUCKET_STORAGE_CLASS_ARCHIVE:
+                raw_list.append(str(obj.key))
+        #ans_list=get_archive_list(raw_list,bucket)
+        globalEnv.logger.info('get archive list success!')
+        #return ans_list
+        return raw_list
