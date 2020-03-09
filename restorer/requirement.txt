@@ -1,0 +1,4 @@
+oss2>=2.9.0
+aliyun-python-sdk-core>=2.13.10 
+aliyun-python-sdk-core-v3>=2.13.11
+demjson>=2.2.4
