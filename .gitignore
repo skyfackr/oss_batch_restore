@@ -132,3 +132,4 @@ dmypy.json
 .fun/
 Funfile
 *.dockerfile
+!flow.yml
