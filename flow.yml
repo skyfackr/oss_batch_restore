@@ -1,0 +1,65 @@
+
+version: v1beta1
+type: flow
+steps:
+  - type: pass
+    name: inputTest
+    outputMappings:
+      - source: $input.bucket
+        target: bucket
+      - source: $input.prefix
+        target: prefix
+  - type: task
+    name: fc-iterator_list_maker
+    resourceArn: acs:fc:cn-shanghai:1936744620143523:services/oss_batch_restore.LATEST/functions/iterator_list_maker
+    inputMappings:
+      - source: $input.bucket
+        target: bucket
+      - source: $input.prefix
+        target: prefix
+  - type: choice
+    name: exitIfNone
+    choices:
+      - condition: $.success == true
+        steps:
+          - type: foreach
+            name: fc-foreach-restorer
+            iterationMapping:
+             collection: $.list
+             item: filename
+            steps:
+             - type: task
+               name: fc-restorer
+               resourceArn: acs:fc:cn-shanghai:1936744620143523:services/oss_batch_restore.LATEST/functions/restorer
+               inputMappings:
+                - source: $input.filename
+                  target: filename
+                - source: $input.bucket
+                  target: bucket
+               outputMappings:
+                - source: $local.success
+                  target: success
+                - source: $local.filename
+                  target: filename   
+            inputMappings:
+            - source: $input.bucket
+              target: bucket
+            outputMappings:
+            - source: $local[*].success
+              target: anslist
+            - source: $local[*].filename 
+              target: filelist
+
+    default:
+      steps:
+        - type: pass
+          name: fileNotFound
+          outputMappings:
+            - source: "cannot find prefix or no archive file"
+              target: msg
+          end: true
+  
+    
+    
+     
+    
