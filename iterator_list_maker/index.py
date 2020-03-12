@@ -3,6 +3,7 @@ from functionCode.globalEnvironmention import globalEnv
 from functionCode.mainfunc import main_func
 from functionCode.oss_Middleware import ossMiddleWare
 import logging,demjson
+from Crypto.Hash import SHA256
 
 # if you open the initializer feature, please implement the initializer function, as below:
 # def initializer(context):
@@ -33,5 +34,6 @@ def handler(event, context):
   ans=main_func(event,context)
   if type(ans)==dict:
     ans=demjson.encode(ans)
-  globalEnv.logger.info('ans:'+str(ans))
+  globalEnv.logger.debug('ans:'+str(ans))
+  globalEnv.logger.info('return payload sha256:'+SHA256.new(str(ans).encode()).hexdigest())
   return ans
