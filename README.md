@@ -8,6 +8,7 @@
        2. aliyun-python-sdk-core
        3. aliyun-python-sdk-core-v3
        4. demjson
+       5. pycrypto
     2. restorer
        1. oss2
        2. aliyun-python-sdk-core
